@@ -1,0 +1,73 @@
+C51 COMPILER V9.57.0.0   DELAY                                                             01/06/2022 18:01:07 PAGE 1   
+
+
+C51 COMPILER V9.57.0.0, COMPILATION OF MODULE DELAY
+OBJECT MODULE PLACED IN .\Objects\delay.obj
+COMPILER INVOKED BY: E:\keil\C51\BIN\C51.EXE delay.c OPTIMIZE(8,SPEED) BROWSE DEBUG OBJECTEXTEND PRINT(.\Listings\delay.
+                    -lst) OBJECT(.\Objects\delay.obj)
+
+line level    source
+
+   1          #include <REGX52.H>
+   2          
+   3          void Delay18ms()                //@11.0592MHz
+   4          {
+   5   1              unsigned char i, j;
+   6   1      
+   7   1              i = 194;
+   8   1              j = 161;
+   9   1              do
+  10   1              {
+  11   2                      while (--j);
+  12   2              } while (--i);
+  13   1      }
+  14          
+  15              
+  16            
+  17           void  Delay_10us(void)
+  18                {
+  19   1             unsigned char i;
+  20   1              i--;
+  21   1              i--;
+  22   1              i--;
+  23   1              i--;
+  24   1              i--;
+  25   1              i--;
+  26   1             }
+  27                
+  28                 
+  29           void Delay100us( )             //@11.0592MHz,—” ±100Œ¢√Î
+  30          {
+  31   1              unsigned char i, j;
+  32   1      
+  33   1              i = 2;
+  34   1              j = 15;
+  35   1              do
+  36   1              {
+  37   2                      while (--j);
+  38   2              } while (--i);
+  39   1      }
+  40          
+  41          
+  42          void delay1ms(unsigned char t){
+  43   1              char i;
+  44   1              while(t--){
+  45   2                      for(i=0;i<113;i++);
+  46   2              }
+  47   1      }
+
+
+MODULE INFORMATION:   STATIC OVERLAYABLE
+   CODE SIZE        =     51    ----
+   CONSTANT SIZE    =   ----    ----
+   XDATA SIZE       =   ----    ----
+   PDATA SIZE       =   ----    ----
+C51 COMPILER V9.57.0.0   DELAY                                                             01/06/2022 18:01:07 PAGE 2   
+
+   DATA SIZE        =   ----       1
+   IDATA SIZE       =   ----    ----
+   BIT SIZE         =   ----    ----
+END OF MODULE INFORMATION.
+
+
+C51 COMPILATION COMPLETE.  0 WARNING(S),  0 ERROR(S)

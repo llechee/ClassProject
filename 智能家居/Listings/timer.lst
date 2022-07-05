@@ -1,0 +1,61 @@
+C51 COMPILER V9.57.0.0   TIMER                                                             01/05/2022 22:56:41 PAGE 1   
+
+
+C51 COMPILER V9.57.0.0, COMPILATION OF MODULE TIMER
+OBJECT MODULE PLACED IN .\Objects\timer.obj
+COMPILER INVOKED BY: E:\keil\C51\BIN\C51.EXE timer.c OPTIMIZE(8,SPEED) BROWSE DEBUG OBJECTEXTEND PRINT(.\Listings\timer.
+                    -lst) OBJECT(.\Objects\timer.obj)
+
+line level    source
+
+   1          #include <REGX52.H>
+   2          #include "HTR.h"
+   3          #include "Nixi.h"
+   4          
+   5          typedef unsigned char  U8;
+   6          extern U8  U8T_data_H,U8T_data_L,U8RH_data_H,U8RH_data_L;
+   7          typedef unsigned int u16;         //对数据类型进行声明定义
+   8          typedef unsigned char u8;
+   9          
+  10          sbit led=P2^0;   //定义P20口是led
+  11          
+  12          
+  13          void Timer0Init()
+  14          {
+  15   1              TMOD|=0X01;//选择为定时器0模式，工作方式1，仅用TR0打开启动。
+  16   1      
+  17   1              TH0=0XFC;       //给定时器赋初值，定时1ms
+  18   1              TL0=0X18;       
+  19   1              ET0=1;//打开定时器0中断允许
+  20   1              EA=1;//打开总中断
+  21   1              TR0=1;//打开定时器                      
+  22   1      }
+  23          
+  24          
+  25          
+  26          void Timer0() interrupt 1
+  27          {
+  28   1              TH0=0XFC;       //给定时器赋初值，定时1ms
+  29   1              TL0=0X18;
+  30   1              
+  31   1          Nixie(1,U8RH_data_H/10);
+  32   1          Nixie(2,U8RH_data_H%10);
+  33   1      
+  34   1          Nixie(3,U8T_data_H/10);
+  35   1          Nixie(4,U8T_data_H%10);   
+  36   1              
+  37   1      }
+
+
+MODULE INFORMATION:   STATIC OVERLAYABLE
+   CODE SIZE        =    138    ----
+   CONSTANT SIZE    =   ----    ----
+   XDATA SIZE       =   ----    ----
+   PDATA SIZE       =   ----    ----
+   DATA SIZE        =   ----    ----
+   IDATA SIZE       =   ----    ----
+   BIT SIZE         =   ----    ----
+END OF MODULE INFORMATION.
+
+
+C51 COMPILATION COMPLETE.  0 WARNING(S),  0 ERROR(S)

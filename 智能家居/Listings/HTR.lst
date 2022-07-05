@@ -1,0 +1,141 @@
+C51 COMPILER V9.57.0.0   HTR                                                               01/06/2022 18:01:07 PAGE 1   
+
+
+C51 COMPILER V9.57.0.0, COMPILATION OF MODULE HTR
+OBJECT MODULE PLACED IN .\Objects\HTR.obj
+COMPILER INVOKED BY: E:\keil\C51\BIN\C51.EXE HTR.c OPTIMIZE(8,SPEED) BROWSE DEBUG OBJECTEXTEND PRINT(.\Listings\HTR.lst)
+                    - OBJECT(.\Objects\HTR.obj)
+
+line level    source
+
+   1          #include <REGX52.H>
+   2          #include <intrins.h> 
+   3          #include "delay.h"
+   4          #include "Nixi.h"
+   5          
+   6          //
+   7          typedef unsigned char  U8;       /* defined for unsigned 8-bits integer variable          无符号8位整型变量  */
+   8          typedef signed   char  S8;       /* defined for signed 8-bits integer variable            有符号8位整型变量  */
+   9          typedef unsigned int   U16;      /* defined for unsigned 16-bits integer variable         无符号16位整型变量 */
+  10          
+  11          #define uchar unsigned char
+  12          #define uint unsigned int
+  13          #define   Data_0_time    4
+  14          
+  15          
+  16          //----------------------------------------------//
+  17          //----------------定义区--------------------//
+  18          //----------------------------------------------//
+  19          U8  U8FLAG,k;
+  20          U8  U8count,U8temp;
+  21          U8  U8T_data_H,U8T_data_L,U8RH_data_H,U8RH_data_L,U8checkdata;
+  22          U8  U8T_data_H_temp,U8T_data_L_temp,U8RH_data_H_temp,U8RH_data_L_temp,U8checkdata_temp;
+  23          U8  U8comdata;
+  24          U8  outdata[5];  //定义发送的字节数        
+  25          U8  indata[5];
+  26          U8  count, count_r=0;
+  27          U16 U16temp1,U16temp2;
+  28          
+  29          
+  30           
+  31                  
+  32            void  COM(void)
+  33                {
+  34   1           
+  35   1                      U8 i;
+  36   1                
+  37   1             for(i=0;i<8;i++)    
+  38   1                  {
+  39   2                      
+  40   2                          U8FLAG=2;   
+  41   2                      while((!P3_4)&&U8FLAG++);
+  42   2                              Delay_10us();
+  43   2                          Delay_10us();
+  44   2                              Delay_10us();
+  45   2                              U8temp=0;
+  46   2                   if(P3_4)U8temp=1;
+  47   2                          U8FLAG=2;
+  48   2                       while((P3_4)&&U8FLAG++);
+  49   2                      //超时则跳出for循环               
+  50   2                       if(U8FLAG==1)break;
+  51   2                      //判断数据位是0还是1     
+  52   2                         
+  53   2                      // 如果高电平高过预定0高电平值则数据位为 1 
+  54   2                       
+C51 COMPILER V9.57.0.0   HTR                                                               01/06/2022 18:01:07 PAGE 2   
+
+  55   2                         U8comdata<<=1;
+  56   2                         U8comdata|=U8temp;        //0
+  57   2                   }//rof
+  58   1                 
+  59   1              }
+  60          
+  61                  //--------------------------------
+  62                  //-----湿度读取子程序 ------------
+  63                  //--------------------------------
+  64                  //--------------------------------
+  65          
+  66            void RH(void)
+  67                  {
+  68   1                //主机拉低18ms 
+  69   1             P3_4=0;
+  70   1                 Delay18ms();
+  71   1                 P3_4=1;
+  72   1               //总线由上拉电阻拉高 主机延时20us
+  73   1                 Delay_10us();
+  74   1                 Delay_10us();
+  75   1                 Delay_10us();
+  76   1                 Delay_10us();
+  77   1               //主机设为输入 判断从机响应信号 
+  78   1                 P3_4=1;
+  79   1               //判断从机是否有低电平响应信号 如不响应则跳出，响应则向下运行    
+  80   1                 if(!P3_4)             //T !    
+  81   1                 {
+  82   2                 U8FLAG=2;
+  83   2               //判断从机是否发出 80us 的低电平响应信号是否结束        
+  84   2                 while((!P3_4)&&U8FLAG++);
+  85   2                 U8FLAG=2;
+  86   2               //判断从机是否发出 80us 的高电平，如发出则进入数据接收状态
+  87   2                 while((P3_4)&&U8FLAG++);
+  88   2               //数据接收状态          
+  89   2                 COM();
+  90   2                 U8RH_data_H_temp=U8comdata;
+  91   2                 COM();
+  92   2                 U8RH_data_L_temp=U8comdata;
+  93   2                 COM();
+  94   2                 U8T_data_H_temp=U8comdata;
+  95   2                 COM();
+  96   2                 U8T_data_L_temp=U8comdata;
+  97   2                 COM();
+  98   2                 U8checkdata_temp=U8comdata;
+  99   2                 P3_4=1;
+ 100   2               //数据校验 
+ 101   2               
+ 102   2                 U8temp=(U8T_data_H_temp+U8T_data_L_temp+U8RH_data_H_temp+U8RH_data_L_temp);
+ 103   2                 if(U8temp==U8checkdata_temp)
+ 104   2                 {
+ 105   3                        U8RH_data_H=U8RH_data_H_temp;
+ 106   3                        U8RH_data_L=U8RH_data_L_temp;
+ 107   3                        U8T_data_H=U8T_data_H_temp;
+ 108   3                        U8T_data_L=U8T_data_L_temp;
+ 109   3                        U8checkdata=U8checkdata_temp;
+ 110   3                 }//fi
+ 111   2                 }//fi
+ 112   1      
+ 113   1              }
+
+
+MODULE INFORMATION:   STATIC OVERLAYABLE
+C51 COMPILER V9.57.0.0   HTR                                                               01/06/2022 18:01:07 PAGE 3   
+
+   CODE SIZE        =    184    ----
+   CONSTANT SIZE    =   ----    ----
+   XDATA SIZE       =   ----    ----
+   PDATA SIZE       =   ----    ----
+   DATA SIZE        =     31       1
+   IDATA SIZE       =   ----    ----
+   BIT SIZE         =   ----    ----
+END OF MODULE INFORMATION.
+
+
+C51 COMPILATION COMPLETE.  0 WARNING(S),  0 ERROR(S)
